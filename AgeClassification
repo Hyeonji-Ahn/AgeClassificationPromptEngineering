@@ -1,0 +1,65 @@
+from openai import OpenAI
+import os
+import json
+import openpyxl
+
+from dotenv import load_dotenv, find_dotenv
+_ = load_dotenv(find_dotenv())
+
+client = OpenAI(
+    # This is the default and can be omitted
+    api_key=os.environ.get("OPENAI_API_KEY"),
+)
+
+def chat_completion (prompt):
+    completion= client.chat.completions.create(
+    messages=[
+        {
+            "role": "user",
+            "content": prompt,
+        }
+    ],
+    model="gpt-3.5-turbo")
+    return completion.choices[0].message
+
+
+
+textdata = openpyxl.load_workbook('DepressionText_parsed.xlsx')
+
+# Get all the sheets in the workbook
+sheets = textdata.sheetnames
+
+#agelist: age, text
+samples = []
+
+# # Iterate through the sheets
+# for sheet in sheets:
+#     # Get the active worksheet
+#     ws = textdata[sheet]
+#     # Iterate through the rows in the worksheet
+#     for row in ws.rows:
+#         print(row[1].value , " " ,row[0].value)
+#         samples.append([row[1].value,row[0].value])
+
+# Iterate through specific sheet
+ws = textdata[sheets[0]]
+for row in ws.rows:
+    print(row[1].value , " " ,row[0].value)
+    samples.append([row[1].value,row[0].value])
+
+
+for i in samples:
+    
+    prompt = f"""Predict the age of the text delimited by triple backticks and Provide them in JSON format with the following keys: reasoning, predicted_age. predicted_age values should be in an integer format.
+    ```{i[1]}``` 
+    """
+
+    
+    response = chat_completion(prompt)
+    data  = json.loads(response.content)
+    reasoning = data['reasoning']
+    predicted_age = data['predicted_age']
+    actual_age = i[0]
+
+    print(str(predicted_age==actual_age)+ " " + str(predicted_age) + " " + str(actual_age) + " " + reasoning)
+   
