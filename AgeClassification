@@ -2,6 +2,7 @@ from openai import OpenAI
 import os
 import json
 import openpyxl
+import xlsxwriter
 
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv())
@@ -44,9 +45,11 @@ samples = []
 # Iterate through specific sheet
 ws = textdata[sheets[0]]
 for row in ws.rows:
-    print(row[1].value , " " ,row[0].value)
+    #print(row[1].value , " " ,row[0].value)
     samples.append([row[1].value,row[0].value])
 
+results = (['d','prediction','actual','reasoning']);
+#d = predicted age - actual age. (aiming for 0)
 
 for i in samples:
     
@@ -61,5 +64,21 @@ for i in samples:
     predicted_age = data['predicted_age']
     actual_age = i[0]
 
+    results.append([predicted_age-actual_age,predicted_age,actual_age,reasoning]);
+
     print(str(predicted_age==actual_age)+ " " + str(predicted_age) + " " + str(actual_age) + " " + reasoning)
-   
+
+workbook = xlsxwriter.Workbook('Example3.xlsx');
+worksheet = workbook.add_worksheet("result 1/16")
+
+r = 0;
+c = 0;
+
+for d,p,a,r in (results):
+    worksheet.write(r,c,d);
+    worksheet.write(r,c+1,d);
+    worksheet.write(r,c+2,d);
+    worksheet.write(r,c+3,d);
+    r += 1
+
+workbook.close()
