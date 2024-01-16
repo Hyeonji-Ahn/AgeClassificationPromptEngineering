@@ -1,5 +1,10 @@
 # AgeClassificationPromptEngineering
 
+How to start env.
+
+py -m venv openai-env
+openai-env\Scripts\activate
+
 Depression Text: 13-17 years old
 Two parsing:
     1. Age

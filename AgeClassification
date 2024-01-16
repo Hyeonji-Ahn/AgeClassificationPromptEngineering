@@ -52,6 +52,9 @@ results = (['d','prediction','actual','reasoning']);
 #d = predicted age - actual age. (aiming for 0)
 
 for i in samples:
+
+    if(i[0] == "age"):
+        continue
     
     prompt = f"""Predict the age of the text delimited by triple backticks and Provide them in JSON format with the following keys: reasoning, predicted_age. predicted_age values should be in an integer format.
     ```{i[1]}``` 
@@ -61,15 +64,18 @@ for i in samples:
     response = chat_completion(prompt)
     data  = json.loads(response.content)
     reasoning = data['reasoning']
-    predicted_age = data['predicted_age']
-    actual_age = i[0]
-
+    if(data['predicted_age'] is None):
+        predicted_age = 0
+    else:
+        predicted_age = int(data['predicted_age'])
+    actual_age = int(i[0])
+    
     results.append([predicted_age-actual_age,predicted_age,actual_age,reasoning]);
 
     print(str(predicted_age==actual_age)+ " " + str(predicted_age) + " " + str(actual_age) + " " + reasoning)
 
-workbook = xlsxwriter.Workbook('Example3.xlsx');
-worksheet = workbook.add_worksheet("result 1/16")
+workbook = xlsxwriter.Workbook('DataArchive.xlsx');
+worksheet = workbook.add_worksheet("01162024")
 
 r = 0;
 c = 0;
