@@ -48,7 +48,7 @@ for row in ws.rows:
     #print(row[1].value , " " ,row[0].value)
     samples.append([row[1].value,row[0].value])
 
-results = (['d','prediction','actual','reasoning']);
+results = [['d','prediction','actual','reasoning']];
 #d = predicted age - actual age. (aiming for 0)
 
 for i in samples:
@@ -64,7 +64,7 @@ for i in samples:
     response = chat_completion(prompt)
     data  = json.loads(response.content)
     reasoning = data['reasoning']
-    if(data['predicted_age'] is None):
+    if(data['predicted_age'] == None or data['predicted_age']=='N/A'):
         predicted_age = 0
     else:
         predicted_age = int(data['predicted_age'])
@@ -80,11 +80,12 @@ worksheet = workbook.add_worksheet("01162024")
 r = 0;
 c = 0;
 
-for d,p,a,r in (results):
-    worksheet.write(r,c,d);
-    worksheet.write(r,c+1,d);
-    worksheet.write(r,c+2,d);
-    worksheet.write(r,c+3,d);
+for value in (results):
+    print(value)
+    worksheet.write(r,c,value[0]);
+    worksheet.write(r,c+1,value[1]);       
+    worksheet.write(r,c+2,value[2]);
+    worksheet.write(r,c+3,value[3]);
     r += 1
 
 workbook.close()
