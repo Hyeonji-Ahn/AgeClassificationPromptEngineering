@@ -43,7 +43,7 @@ samples = []
 #         samples.append([row[1].value,row[0].value])
 
 # Iterate through specific sheet
-ws = textdata[sheets[0]]
+ws = textdata[sheets[4]]
 for row in ws.rows:
     #print(row[1].value , " " ,row[0].value)
     samples.append([row[1].value,row[0].value])
@@ -56,7 +56,21 @@ for i in samples:
     if(i[0] == "age"):
         continue
     
-    prompt = f"""Predict the age of the text delimited by triple backticks and Provide them in JSON format with the following keys: reasoning, predicted_age. predicted_age values should be in an integer format.
+    prompt = f"""Predict the age of the text delimited by triple backticks. The following is an example of a 17-year old in the blog dataset, the system predicted this to be from a 16.48-year-old:
+I can’t sleep, but this time I have school tommorow, so I have to try I guess. My parents got all pissed at me today because I forgot how to do the homework [...]. Really mad, I ended it pissing off my mom and [...] NOTHING! Damn, when I’m at
+my cousin’s I have no urge to use the computer like I do here, [...].
+This example matches with important features determined by the system, containing references to school and parents, and usage of swearing and anger words.
+The following are selected turns (T) by a 19-year old (system prediction: 17.37 years) in a conversation in the Fisher dataset.
+T: yeah it’s too i just just freaked out [...]
+T: that kinda sucks for them
+T: they were they were like going crazy
+[...]
+T: it’s like against some law to like
+The text has many informal words such as “kinda” and well as many occurrences of the word “like.”
+This example is from a 19-year old from the cancer dataset. The system’s prediction was far off, estimating an age of 35.48.
+Im very young and an athlete and I really do not want to look disfigured, especially when I work so hard to be fit. I know it sounds shallow, but Im young and hope to [...] my husband one day :) [...] My
+grandmother died of breast cancer at 51, and my mother is currently dealing with a cancerous tumor on her ovaries. Besides explicit references to being “very young,”
+the text is much more formal than typical texts, making it a hard example.Provide the predicted age in JSON format with the following keys: reasoning, predicted_age. predicted_age values should be in an integer format.
     ```{i[1]}``` 
     """
 
@@ -75,7 +89,7 @@ for i in samples:
     print(str(predicted_age==actual_age)+ " " + str(predicted_age) + " " + str(actual_age) + " " + reasoning)
 
 workbook = xlsxwriter.Workbook('DataArchive.xlsx');
-worksheet = workbook.add_worksheet("01162024")
+worksheet = workbook.add_worksheet("01242024-0")
 
 r = 0;
 c = 0;
