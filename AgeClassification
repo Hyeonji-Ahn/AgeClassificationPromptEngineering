@@ -56,22 +56,28 @@ for i in samples:
     if(i[0] == "age"):
         continue
     
-    prompt = f"""Predict the age of the text delimited by triple backticks. The following is an example of a 17-year old in the blog dataset, the system predicted this to be from a 16.48-year-old:
-I can’t sleep, but this time I have school tommorow, so I have to try I guess. My parents got all pissed at me today because I forgot how to do the homework [...]. Really mad, I ended it pissing off my mom and [...] NOTHING! Damn, when I’m at
-my cousin’s I have no urge to use the computer like I do here, [...].
-This example matches with important features determined by the system, containing references to school and parents, and usage of swearing and anger words.
-The following are selected turns (T) by a 19-year old (system prediction: 17.37 years) in a conversation in the Fisher dataset.
-T: yeah it’s too i just just freaked out [...]
-T: that kinda sucks for them
-T: they were they were like going crazy
-[...]
-T: it’s like against some law to like
-The text has many informal words such as “kinda” and well as many occurrences of the word “like.”
-This example is from a 19-year old from the cancer dataset. The system’s prediction was far off, estimating an age of 35.48.
-Im very young and an athlete and I really do not want to look disfigured, especially when I work so hard to be fit. I know it sounds shallow, but Im young and hope to [...] my husband one day :) [...] My
-grandmother died of breast cancer at 51, and my mother is currently dealing with a cancerous tumor on her ovaries. Besides explicit references to being “very young,”
-the text is much more formal than typical texts, making it a hard example.Provide the predicted age in JSON format with the following keys: reasoning, predicted_age. predicted_age values should be in an integer format.
-    ```{i[1]}``` 
+    prompt = f"""Prompt 3: Predict the age of the text delimited by triple backticks. The following are examples of writing samples of people of various ages.
+
+9 years old: Out at recess, Lissa and I played on the swings. ―Hey! Look over there!‖ Lissa shouted. Formed as an ocean wave, the cats ran toward me. 
+
+10 years old: There were many benches all shoved to the right. It was hard to see the color In the murky dark but it seemed to be some sort of faded brown. The room was big, no, huge which gave it all the more reason to be terror bringing. Who knew what would be lurking in the corner!
+
+11 years old: When Gus was a baby, he had to be kept in a cage because he wasn‘t allowed to interact with the other pets until he was older. He couldn‘t interact with the other pets because when Twister was a baby, the ferrets bit her ear and dragged her under the bed, and bit her in the back of the neck and we didn‘t want the same thing to happen to Gus. 
+
+12 years old: If we already have cameras in the halls, why spend the money to get thirty more cameras for all the different classrooms? Our school district already has a low budget, so we would be spending money on something completely unnecessary. There hasn‘t been camera-worthy trouble in classrooms. Camera-worthy trouble would be bad behavior every time a teacher left the room. 
+
+13 years old: I swear I’ve been feeling restless since morning
+
+14 years old: I want to ask. I'm an extrovert, but the more I come here, the more scared I am when I meet a lot of people, I feel anxious right away. Does anyone know why that is?
+
+15 years old: Unsettled !! That's when there is a test. But face it and get over it. It's been like that since the school days, the present can't be done like that. It could be
+
+16 years old: I want the pain to stopMy fiancee keeps hurting me. The nightmares from Afghanistan won't stop. I am hurting all the time. I feel so alone. I want to end it.
+
+17 years old: My mother passed away today...I just wanted to come here and ask for anyone willing to talk to me. My mom passed away this morning. Wrote us a note to all of us... well thatâ€™s the most I can bare to describe.
+
+Provide the predicted age in JSON format with the following keys: reasoning, predicted_age. predicted_age values should be in an integer format.
+       ```{i[1]}``` 
     """
 
     
@@ -89,7 +95,7 @@ the text is much more formal than typical texts, making it a hard example.Provid
     print(str(predicted_age==actual_age)+ " " + str(predicted_age) + " " + str(actual_age) + " " + reasoning)
 
 workbook = xlsxwriter.Workbook('DataArchive.xlsx');
-worksheet = workbook.add_worksheet("01242024-0")
+worksheet = workbook.add_worksheet("01282024-0")
 
 r = 0;
 c = 0;
