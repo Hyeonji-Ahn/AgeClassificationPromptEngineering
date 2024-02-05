@@ -30,40 +30,53 @@ textdata = openpyxl.load_workbook('DepressionText_parsed.xlsx')
 # Get all the sheets in the workbook
 sheets = textdata.sheetnames
 
+#prompt sample list: string
+cases = []
+
 #agelist: age, text
 samples = []
 
-# # Iterate through the sheets
-# for sheet in sheets:
-#     # Get the active worksheet
-#     ws = textdata[sheet]
-#     # Iterate through the rows in the worksheet
-#     for row in ws.rows:
-#         print(row[1].value , " " ,row[0].value)
-#         samples.append([row[1].value,row[0].value])
-
 # Iterate through specific sheet
-ws = textdata[sheets[1]]
+ws = textdata[sheets[2]]
+for row in ws.rows:
+    #print(row[1].value , " " ,row[0].value)
+    cases.append(row[0].value)
+
+ws = textdata[sheets[2]]
 for row in ws.rows:
     #print(row[1].value , " " ,row[0].value)
     samples.append([row[1].value,row[0].value])
 
-results = [['d','prediction','actual','reasoning']];
+# # Iterate through the sheets
+# for i in range(5):
+#     # Get the active worksheet
+#     ws = textdata[sheets[i]]
+#     # Iterate through the rows in the worksheet
+#     for row in ws.rows:
+#         #print(row[1].value , " " ,row[0].value)
+#         samples.append([row[1].value,row[0].value])
+    
+results = [['d','prediction','actual','ptype','reasoning']];
 #d = predicted age - actual age. (aiming for 0)
 
-for i in samples:
-
-    if(i[0] == "age"):
+for index, p in enumerate(cases):
+    print(str(index)+ " " +p)
+    if(index ==0):
+        print("skip")
         continue
     
-    prompt = f"""Predict the age of the text delimited by triple backticks. Let’s think step-by-step. The following are examples of writing samples of people of various ages.
+    for i in samples:
+
+        if(i[0] == "age"):
+            continue
+        
+        prompt = f"""Predict the age of the text delimited by triple backticks. Let’s think step-by-step. The following are examples of writing samples of people of various ages.
 
 9 years old: Out at recess, Lissa and I played on the swings. ―Hey! Look over there!‖ Lissa shouted. Formed as an ocean wave, the cats ran toward me. 
 
-10 years old: There were many benches all shoved to the right. It was hard to see the color In the murky dark but it seemed to be some sort of faded brown. The room was big, no, huge which gave it all the more reason to be terror bringing. Who knew what would be lurking in the corner!
+10 years old:I had had shots before. They were not your best friend. After a long while a nurse said, “Alyssa, Trevor, and Taryn, your turn.” It was our turn. I got half dragged and I half walked. The door creaked open. It was the room of no return. The door slammed shut. There was no way out. Gorwn-ups guarding every outry way, making sure we couldn’t escape. Seeing there was no way out we gave up and went for it.
 
-11 years old: When Gus was a baby, he had to be kept in a cage because he wasn‘t allowed to interact with the other pets until he was older. He couldn‘t interact with the other pets because when Twister was a baby, the ferrets bit her ear and dragged her under the bed, and bit her in the back of the neck and we didn‘t want the same thing to happen to Gus. 
-
+11 years old: """+p+"""
 12 years old: If we already have cameras in the halls, why spend the money to get thirty more cameras for all the different classrooms? Our school district already has a low budget, so we would be spending money on something completely unnecessary. There hasn‘t been camera-worthy trouble in classrooms. Camera-worthy trouble would be bad behavior every time a teacher left the room. 
 
 13 years old: I swear I’ve been feeling restless since morning
@@ -77,21 +90,24 @@ for i in samples:
 17 years old: My mother passed away today...I just wanted to come here and ask for anyone willing to talk to me. My mom passed away this morning. Wrote us a note to all of us... well thatâ€™s the most I can bare to describe.
 
 Provide the predicted age in JSON format with the following keys: reasoning, predicted_age. predicted_age values should be in an integer format.
-```{i[1]}``` 
+```"""+i[1]+"""``` 
     """
-    
-    response = chat_completion(prompt)
-    data  = json.loads(response.content)
-    reasoning = data['reasoning']
-    if(data['predicted_age'] == None or data['predicted_age']=='N/A'):
-        predicted_age = 0
-    else:
-        predicted_age = int(data['predicted_age'])
-    actual_age = int(i[0])
-    
-    results.append([predicted_age-actual_age,predicted_age,actual_age,reasoning]);
-
-    print(str(predicted_age==actual_age)+ " " + str(predicted_age) + " " + str(actual_age) + " " + reasoning)
+        
+        response = chat_completion(prompt)
+        data  = json.loads(response.content)
+        if(data.get('reasoning') == False):
+            reasoning = " "
+        else:
+            reasoning = data['reasoning']
+        #print(str(data['predicted_age'])+" ")
+        if(type(data['predicted_age']) != int):
+            predicted_age = 0
+        else:
+            predicted_age = data['predicted_age']
+        actual_age = int(i[0])
+        
+        results.append([predicted_age-actual_age,predicted_age,actual_age,index,reasoning]);
+        print(str(predicted_age==actual_age)+ " " + str(predicted_age) + " " + str(actual_age) + " " + reasoning)
 
 workbook = xlsxwriter.Workbook('DataArchive.xlsx');
 worksheet = workbook.add_worksheet("02012024-0")
@@ -100,7 +116,7 @@ r = 0;
 c = 0;
 
 for value in (results):
-    print(value)
+    # print(value)
     worksheet.write(r,c,value[0]);
     worksheet.write(r,c+1,value[1]);       
     worksheet.write(r,c+2,value[2]);
