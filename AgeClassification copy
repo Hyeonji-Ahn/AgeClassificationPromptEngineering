@@ -81,7 +81,7 @@ for index, p in enumerate(cases):
 
     12 years old: If we already have cameras in the halls, why spend the money to get thirty more cameras for all the different classrooms? Our school district already has a low budget, so we would be spending money on something completely unnecessary. There hasn‘t been camera-worthy trouble in classrooms. Camera-worthy trouble would be bad behavior every time a teacher left the room. There is no reason to install cameras that might just cause trouble, both for the students and for the budget. 
 
-    13 years old: Feeling excessively anxious all the time can disrupt sleep patterns or not?
+    13 years old: """ + p + """
 
     14 years old: I want to ask. I'm an extrovert, but the more I come here, the more scared I am when I meet a lot of people, I feel anxious right away. Does anyone know why that is?
 
